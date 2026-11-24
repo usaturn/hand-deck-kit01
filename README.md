@@ -1,7 +1,55 @@
-# hand-deck-kit01
+# XRift Item Template
 
-種類: `generic`
+React Three Fiber で 3D アイテムを作成するための XRift アイテムテンプレートです。
 
-開発は [usaturn/agent-workspace](https://github.com/usaturn/agent-workspace) の登録プロジェクトとして行います。
+## セットアップ
 
-検証入口: `./scripts/verify.sh`
+```bash
+npm install
+npm run dev
+```
+
+## ビルド
+
+```bash
+npm run build
+```
+
+## Shared 依存関係
+
+このテンプレートは [Module Federation](https://module-federation.io/) を使用しており、以下の依存関係はホストアプリケーション（xrift-frontend）と共有されます。アイテムのバンドルにはインライン化されず、shared チャンクとして分離されます。
+
+| パッケージ | バージョン |
+| --- | --- |
+| `react` | ^19.0.0 |
+| `react-dom` | ^19.0.0 |
+| `react/jsx-runtime` | - |
+| `three` | ^0.183.1 |
+| `three/addons` | ^0.183.1 |
+| `@react-three/fiber` | ^9.3.0 |
+| `@react-three/rapier` | ^2.1.0 |
+| `@react-three/drei` | ^10.7.3 |
+| `@react-three/uikit` | ^1.0.0 |
+| `@pmndrs/uikit` | ^1.0.0 |
+| `@xrift/world-components` | ^0.41.0 |
+
+### `three/addons` について
+
+`three/addons` は shared 依存として利用可能です。`DRACOLoader` や `GLTFLoader` など Three.js のアドオンモジュールを使用する場合は、`three/addons/*` からインポートしてください。
+
+```tsx
+// OK: shared チャンクとして分離される
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+```
+
+これにより、アドオンモジュールがアイテムチャンクにインライン化されることを防ぎます。インライン化された場合、`@xrift/code-security` によって `new Worker()` などが critical 違反として検出される問題が発生します。
+
+## agent-workspace での開発
+
+このリポジトリは [usaturn/agent-workspace](https://github.com/usaturn/agent-workspace) の登録プロジェクト（XRift のアイテムの確認用の見本）です。制作・検証・公開の規則は agent-workspace の `.agents/projects/hand-deck-kit01.md` にあり、このリポジトリの `AGENTS.md`・`CLAUDE.md` と食い違うときはそちらを優先します。
+
+- テンプレート: `WebXR-JP/xrift-item-template` の `e4719e065089c833eacef3e6bd159fe4eaf91604`（`xrift create item` で生成）
+- 検証入口: `./scripts/verify.sh`（依存の導入・型チェック・`dist/` を消してからのビルド・`xrift check`。警告も失敗にする）
+- 開発サーバー: `npm ci` の後に `npm run dev`。表示された `Local:` の URL を開き、Ctrl-C で止める
+- `.xrift/` は commit しない（テンプレートの `.gitignore` のとおり）

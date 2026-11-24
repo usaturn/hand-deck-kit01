@@ -1,0 +1,9 @@
+{
+  "item": {
+    "distDir": "./dist",
+    "buildCommand": "npm run build",
+    "title": "hand-deck-kit01",
+    "description": "A sample item created with XRift item template",
+    "thumbnailPath": "thumbnail.png"
+  }
+}
